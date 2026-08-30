@@ -4,6 +4,9 @@
   "compatibility_date": "2026-08-30",
   "compatibility_flags": ["nodejs_compat"],
   "main": "@tanstack/react-start/server-entry",
+  "assets": {
+    "html_handling": "drop-trailing-slash"
+  },
   "analytics_engine_datasets": [
     {
       "binding": "PRODUCT_ANALYTICS",

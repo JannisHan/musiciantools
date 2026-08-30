@@ -11,11 +11,11 @@
 - 完成 SEO 基础设施：六个页面预渲染、唯一 title/description/canonical、英文语言声明、WebApplication 结构化数据、robots.txt 和自动 sitemap；canonical 已与最终 200 URL 统一。
 - 完成隐私优先分析接口：同源 `/api/events` 只接受事件、工具和分类白名单，拒绝 BPM 等原始输入字段；Cloudflare Analytics Engine 预览与正式数据集已隔离。
 - 完成测试与发布检查：17 个单元/接口测试、TypeScript 类型检查、桌面/移动端 Playwright 关键旅程、axe 自动无障碍扫描、正式与 noindex 预览构建、Cloudflare dry-run 均通过。
+- 已将 noindex 版本部署到独立的 `musiciantools-preview` Worker；线上页面、canonical、规范 URL 重定向、90 BPM 客户端计算和匿名事件接口均已回归通过，正式 Worker 未部署。
 
 ## 未完成任务
 
-- 尚未远程部署 `musiciantools-preview`；本地已登录一个 Cloudflare 账户，但需要用户明确授权发布到该具体账户后才能上传。
-- 尚未由用户在预览 URL 上执行最终验收；正式环境也未部署。
+- 尚未由用户在预览 URL 上执行最终验收；正式环境未部署。
 - 尚未配置正式域名、Cloudflare Web Analytics token、Google Search Console 与 `hello@musiciantools.app` 邮件路由。
 - Privacy 与 Terms 当前为项目草案，正式发布前仍需站长确认并视情况进行法律审核。
 - 尚未补齐 Semrush 五个词的 US 数据库口径、设备、12 个月趋势、CPC、SERP Features、Phrase Match、Related、Questions 和前十 URL/外链导出。
@@ -24,8 +24,7 @@
 
 ## 下一步要做的任务
 
-1. 用户明确确认是否允许将预览版本部署到当前 Wrangler 已登录的 Cloudflare 账户；确认后只发布 `musiciantools-preview`。
-2. 用户在预览环境执行真实设备验收，重点检查 Tap 手感、设备上限建议、复制/分享和移动端可读性；修复验收问题后再讨论正式发布。
-3. 正式发布前完成域名、Web Analytics、GSC、邮件路由和法律文本确认，然后单独取得生产部署授权。
-4. 上线后观察真实 Search Console 与匿名产品事件 8–12 周，再决定是否进入 String Tension Compare 和 Fret Calculator。
-5. 并行执行 `docs/05-关键词SERP与MVP裁决.md` 中尚未完成的 Semrush、琴弦数据授权和目标用户访谈工作。
+1. 用户在预览环境执行真实设备验收，重点检查 Tap 手感、设备上限建议、复制/分享和移动端可读性；修复验收问题后再讨论正式发布。
+2. 正式发布前完成域名、Web Analytics、GSC、邮件路由和法律文本确认，然后单独取得生产部署授权。
+3. 上线后观察真实 Search Console 与匿名产品事件 8–12 周，再决定是否进入 String Tension Compare 和 Fret Calculator。
+4. 并行执行 `docs/05-关键词SERP与MVP裁决.md` 中尚未完成的 Semrush、琴弦数据授权和目标用户访谈工作。

@@ -4,6 +4,7 @@ import { expect, test } from '@playwright/test'
 test.describe('BPM / Delay calculator', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/tools/bpm-delay-calculator', { waitUntil: 'networkidle' })
+    await expect(page).toHaveURL(/\/tools\/bpm-delay-calculator$/)
     await expect(page.locator('.calculator-workspace')).toHaveAttribute(
       'data-hydrated',
       'true',
