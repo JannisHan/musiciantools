@@ -1,0 +1,31 @@
+# Musician Tools 项目进度
+
+## 当前已完成任务
+
+- 完成市场、关键词、SERP、竞品和 SEO 风险复核，并将 MVP 裁决及用户确认后的范围记录在 `docs/05-关键词SERP与MVP裁决.md` 与 `docs/06-MVP实施决策.md`。
+- 完成 Cloudflare Workers + Static Assets、TanStack Start、React 19、TypeScript、Tailwind 和 npm lockfile 的项目架构；关键依赖已固定为本次验证版本。
+- 完成 US English BPM to MS & Delay Time Calculator：支持 20–400 BPM、直音/附点/三连音 1/1–1/64、Hz、常用卡片、完整表格、feel 筛选、ms→BPM、单值复制和可分享 URL。
+- 完成用户导向的 Tap Tempo：最多最近 8 次、异常间隔过滤、自适应重置、第二拍 provisional、第三拍起 stable，并提供明确状态反馈。
+- 完成可选设备最大延迟检查、非颜色可用性标识及按实际毫秒值计算的“最长可用设置”建议。
+- 完成响应式浅色/深色/系统主题设计：首页、工具页、About、Methodology、Privacy、Terms；桌面和 Pixel 7 视口无横向溢出。
+- 完成 SEO 基础设施：六个页面预渲染、唯一 title/description/canonical、英文语言声明、WebApplication 结构化数据、robots.txt 和自动 sitemap；canonical 已与最终 200 URL 统一。
+- 完成隐私优先分析接口：同源 `/api/events` 只接受事件、工具和分类白名单，拒绝 BPM 等原始输入字段；Cloudflare Analytics Engine 预览与正式数据集已隔离。
+- 完成测试与发布检查：17 个单元/接口测试、TypeScript 类型检查、桌面/移动端 Playwright 关键旅程、axe 自动无障碍扫描、正式与 noindex 预览构建、Cloudflare dry-run 均通过。
+
+## 未完成任务
+
+- 尚未远程部署 `musiciantools-preview`；本地已登录一个 Cloudflare 账户，但需要用户明确授权发布到该具体账户后才能上传。
+- 尚未由用户在预览 URL 上执行最终验收；正式环境也未部署。
+- 尚未配置正式域名、Cloudflare Web Analytics token、Google Search Console 与 `hello@musiciantools.app` 邮件路由。
+- Privacy 与 Terms 当前为项目草案，正式发布前仍需站长确认并视情况进行法律审核。
+- 尚未补齐 Semrush 五个词的 US 数据库口径、设备、12 个月趋势、CPC、SERP Features、Phrase Match、Related、Questions 和前十 URL/外链导出。
+- 尚未确认 D’Addario、Stringjoy 等琴弦数据的使用边界，并建立首版可追溯的 Unit Weight 数据集。
+- 尚未完成目标用户访谈：需要 3–5 位有 Drop tuning、7/8-string 或换弦长经验的吉他手，以及 1–2 位制琴/维修用户。
+
+## 下一步要做的任务
+
+1. 用户明确确认是否允许将预览版本部署到当前 Wrangler 已登录的 Cloudflare 账户；确认后只发布 `musiciantools-preview`。
+2. 用户在预览环境执行真实设备验收，重点检查 Tap 手感、设备上限建议、复制/分享和移动端可读性；修复验收问题后再讨论正式发布。
+3. 正式发布前完成域名、Web Analytics、GSC、邮件路由和法律文本确认，然后单独取得生产部署授权。
+4. 上线后观察真实 Search Console 与匿名产品事件 8–12 周，再决定是否进入 String Tension Compare 和 Fret Calculator。
+5. 并行执行 `docs/05-关键词SERP与MVP裁决.md` 中尚未完成的 Semrush、琴弦数据授权和目标用户访谈工作。

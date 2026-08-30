@@ -1,0 +1,63 @@
+{
+  "name": "musiciantools",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#/*": "./src/*"
+  },
+  "scripts": {
+    "dev": "vite dev --port 3000",
+    "generate-routes": "tsr generate",
+    "test": "vitest run --config vitest.config.ts",
+    "test:watch": "vitest --config vitest.config.ts",
+    "test:e2e": "playwright test",
+    "typecheck": "tsc --noEmit",
+    "cf-typegen": "wrangler types",
+    "build": "vite build",
+    "build:preview": "cross-env CLOUDFLARE_ENV=preview vite build --mode preview",
+    "preview": "vite preview",
+    "deploy": "npm run build && wrangler deploy",
+    "deploy:preview": "npm run build:preview && wrangler deploy --env preview"
+  },
+  "dependencies": {
+    "@fontsource-variable/instrument-sans": "5.3.0",
+    "@fontsource/ibm-plex-mono": "5.3.0",
+    "@tailwindcss/vite": "4.3.3",
+    "@tanstack/react-devtools": "0.10.12",
+    "@tanstack/react-router": "1.170.32",
+    "@tanstack/react-router-devtools": "1.167.1",
+    "@tanstack/react-start": "1.168.49",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "tailwindcss": "4.3.3"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
+    "@cloudflare/vite-plugin": "1.54.2",
+    "@cloudflare/workers-types": "5.20260830.1",
+    "@playwright/test": "1.62.1",
+    "@tailwindcss/typography": "0.5.20",
+    "@tanstack/devtools-vite": "0.8.5",
+    "@tanstack/router-cli": "1.167.33",
+    "@types/node": "22.20.1",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.5",
+    "@vitejs/plugin-react": "6.1.1",
+    "cross-env": "10.1.0",
+    "typescript": "6.0.3",
+    "vite": "8.2.2",
+    "vitest": "4.1.11",
+    "wrangler": "4.127.1"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "lightningcss",
+      "sharp",
+      "workerd"
+    ]
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}
