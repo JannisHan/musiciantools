@@ -23,9 +23,9 @@ function PrivacyPage() {
       <section>
         <h2>Calculator data</h2>
         <p>
-          BPM values, device limits, taps, and calculations are processed in
-          your browser. We do not require an account and do not store those raw
-          inputs on our servers.
+          BPM values, device limits, taps, scale lengths, fret counts, and
+          exports are processed in your browser. We do not require an account
+          and do not store those raw inputs on our servers.
         </p>
       </section>
       <section>
@@ -34,7 +34,7 @@ function PrivacyPage() {
           We use Cloudflare Web Analytics to understand aggregate page
           performance. We may also count a small set of anonymous product
           events, such as starting a tool, completing a calculation, tapping a
-          tempo, copying a value, or sharing a setup. These events contain an
+          tempo, previewing a pattern, exporting a file, or sharing a setup. These events contain an
           event name and tool identifier—not your input values, full URL,
           referrer, user agent, cookies, or a visitor ID.
         </p>

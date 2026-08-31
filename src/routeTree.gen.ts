@@ -16,6 +16,7 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ApiEventsRouteImport } from './routes/api.events'
 import { Route as ToolsBpmDelayCalculatorRouteImport } from './routes/tools.bpm-delay-calculator'
+import { Route as ToolsFretCalculatorRouteImport } from './routes/tools.fret-calculator'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -52,6 +53,11 @@ const ToolsBpmDelayCalculatorRoute = ToolsBpmDelayCalculatorRouteImport.update({
   path: '/tools/bpm-delay-calculator',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ToolsFretCalculatorRoute = ToolsFretCalculatorRouteImport.update({
+  id: '/tools/fret-calculator',
+  path: '/tools/fret-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -61,6 +67,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/api/events': typeof ApiEventsRoute
   '/tools/bpm-delay-calculator': typeof ToolsBpmDelayCalculatorRoute
+  '/tools/fret-calculator': typeof ToolsFretCalculatorRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -70,6 +77,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/api/events': typeof ApiEventsRoute
   '/tools/bpm-delay-calculator': typeof ToolsBpmDelayCalculatorRoute
+  '/tools/fret-calculator': typeof ToolsFretCalculatorRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,6 +88,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/api/events': typeof ApiEventsRoute
   '/tools/bpm-delay-calculator': typeof ToolsBpmDelayCalculatorRoute
+  '/tools/fret-calculator': typeof ToolsFretCalculatorRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,6 +100,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/api/events'
     | '/tools/bpm-delay-calculator'
+    | '/tools/fret-calculator'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/api/events'
     | '/tools/bpm-delay-calculator'
+    | '/tools/fret-calculator'
   id:
     | '__root__'
     | '/'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/api/events'
     | '/tools/bpm-delay-calculator'
+    | '/tools/fret-calculator'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -119,6 +131,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   ApiEventsRoute: typeof ApiEventsRoute
   ToolsBpmDelayCalculatorRoute: typeof ToolsBpmDelayCalculatorRoute
+  ToolsFretCalculatorRoute: typeof ToolsFretCalculatorRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -172,6 +185,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolsBpmDelayCalculatorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tools/fret-calculator': {
+      id: '/tools/fret-calculator'
+      path: '/tools/fret-calculator'
+      fullPath: '/tools/fret-calculator'
+      preLoaderRoute: typeof ToolsFretCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -183,6 +203,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   ApiEventsRoute: ApiEventsRoute,
   ToolsBpmDelayCalculatorRoute: ToolsBpmDelayCalculatorRoute,
+  ToolsFretCalculatorRoute: ToolsFretCalculatorRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

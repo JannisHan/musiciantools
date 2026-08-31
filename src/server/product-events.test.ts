@@ -80,4 +80,22 @@ describe('POST /api/events', () => {
 
     expect(response.status).toBe(415)
   })
+
+  it('accepts the fret calculator export enum without raw dimensions', async () => {
+    const writeDataPoint = vi.fn()
+    const response = await handleProductEventRequest(
+      new Request('https://musiciantools.app/api/events', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          eventName: 'export_created',
+          toolId: 'fret-calculator',
+          detail: 'pdf_export',
+        }),
+      }),
+      { writeDataPoint },
+    )
+
+    expect(response.status).toBe(204)
+  })
 })

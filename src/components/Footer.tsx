@@ -7,7 +7,7 @@ export default function Footer() {
         <div>
           <p className="footer-brand">Musician Tools</p>
           <p className="footer-note">
-            Practical timing tools for musicians and producers.
+            Practical setup and workshop tools for working musicians.
           </p>
         </div>
         <nav className="footer-links" aria-label="Legal and project links">

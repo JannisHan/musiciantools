@@ -1,540 +1,570 @@
+import {
+  ArrowRight,
+  CheckCircle,
+  ClockCountdown,
+  ClipboardText,
+  Cloud,
+  Copy,
+  LinkSimple,
+  MusicNotes,
+  Play,
+  Pulse,
+  SlidersHorizontal,
+  SpeakerHigh,
+  Stop,
+  WarningCircle,
+  WaveSine,
+  Waveform,
+} from '@phosphor-icons/react'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { OneBarAudioPreview } from '../domain/audio-preview'
+import {
+  calculateDelayPatch,
+  DELAY_RECIPES,
+  formatDelayPatchForClipboard,
+  parseDelayPatchSearch,
+  serializeDelayPatchState,
+  type DelayPatchState,
+  type DelayRecipeId,
+  type OutputMode,
+  type TimeSignature,
+} from '../domain/delay-patch'
 import { TapTempo, type TapTempoResult } from '../domain/tap-tempo'
 import {
   bpmFromQuarterNoteMs,
   calculateDelayRows,
   type TimingFeel,
-  type TimingRow,
 } from '../domain/timing'
-import {
-  createProductEventTracker,
-  type ProductEventDetail,
-} from '../lib/product-events'
-
-const COMMON_TIMING_IDS = [
-  '1/4-straight',
-  '1/8-straight',
-  '1/8-dotted',
-  '1/8-triplet',
-  '1/16-straight',
-]
+import { writeTextToClipboard } from '../lib/browser-actions'
+import { createProductEventTracker } from '../lib/product-events'
 
 const FEELS: TimingFeel[] = ['straight', 'dotted', 'triplet']
+const METERS: Array<{ id: TimeSignature; label: string }> = [
+  { id: '3-4', label: '3/4' },
+  { id: '4-4', label: '4/4' },
+  { id: '6-8', label: '6/8' },
+]
+
+function formatMilliseconds(value: number): string {
+  return value >= 100
+    ? value.toFixed(1)
+    : value >= 10
+      ? value.toFixed(2)
+      : value.toFixed(3)
+}
 
 function isValidBpm(value: number): boolean {
   return Number.isFinite(value) && value >= 20 && value <= 400
 }
 
-function formatMilliseconds(value: number): string {
-  if (value >= 100) return value.toFixed(1)
-  if (value >= 10) return value.toFixed(2)
-  return value.toFixed(3)
-}
-
-async function writeTextToClipboard(text: string): Promise<void> {
-  try {
-    await navigator.clipboard.writeText(text)
-    return
-  } catch {
-    const fallback = document.createElement('textarea')
-    fallback.value = text
-    fallback.setAttribute('readonly', '')
-    fallback.style.position = 'fixed'
-    fallback.style.opacity = '0'
-    document.body.appendChild(fallback)
-    fallback.select()
-    const copied = document.execCommand('copy')
-    fallback.remove()
-    if (!copied) throw new Error('Clipboard permission denied.')
-  }
-}
-
-function Availability({
-  isAvailable,
-}: {
-  isAvailable: boolean
-}) {
-  return isAvailable ? (
-    <span className="availability availability-ok">
-      <span aria-hidden="true">✓</span> In range
-    </span>
-  ) : (
-    <span className="availability availability-over">
-      <span aria-hidden="true">!</span> Over device max
-    </span>
-  )
-}
-
-function TimingCard({
-  row,
-  copied,
-  onCopy,
-}: {
-  row: TimingRow
-  copied: boolean
-  onCopy: (row: TimingRow) => void
-}) {
+function SideBadge({ side }: { side: 'mono' | 'left' | 'right' }) {
   return (
-    <article className={row.isAvailable ? 'timing-card' : 'timing-card is-over'}>
-      <div className="timing-card-heading">
-        <div>
-          <p className="note-fraction">{row.note}</p>
-          <h3>{row.label}</h3>
-        </div>
-        <span className="feel-chip">{row.feel}</span>
-      </div>
-      <p className="timing-value">
-        {formatMilliseconds(row.milliseconds)}
-        <span> ms</span>
-      </p>
-      <div className="timing-meta">
-        <span>{row.hertz.toFixed(3)} Hz</span>
-        <Availability isAvailable={row.isAvailable} />
-      </div>
-      <button
-        type="button"
-        className="copy-button"
-        onClick={() => onCopy(row)}
-        aria-label={`Copy ${formatMilliseconds(row.milliseconds)} milliseconds for ${row.label}`}
-      >
-        {copied ? 'Copied' : 'Copy value'}
-      </button>
-    </article>
+    <span className={`channel-badge channel-${side}`}>
+      {side === 'mono' ? 'Mono' : side === 'left' ? 'Left' : 'Right'}
+    </span>
   )
+}
+
+function RecipeIcon({ id }: { id: DelayRecipeId }) {
+  const Icon =
+    id === 'slapback'
+      ? MusicNotes
+      : id === 'quarter-pulse'
+        ? Pulse
+        : id === 'dotted-eighth'
+          ? ClockCountdown
+          : id === 'triplet-roll'
+            ? WaveSine
+            : Cloud
+  return <Icon className="recipe-icon" size={23} weight="duotone" aria-hidden="true" />
 }
 
 export default function BpmDelayCalculator() {
-  const [isHydrated, setIsHydrated] = useState(false)
+  const [hydrated, setHydrated] = useState(false)
+  const [state, setState] = useState<DelayPatchState>({
+    bpm: 120,
+    meter: '4-4',
+    recipe: 'dotted-eighth',
+    output: 'stereo',
+    deviceMax: 400,
+  })
   const [bpmInput, setBpmInput] = useState('120.0')
-  const [deviceMaxInput, setDeviceMaxInput] = useState('')
+  const [maxInput, setMaxInput] = useState('400')
   const [quarterNoteInput, setQuarterNoteInput] = useState('500')
   const [enabledFeels, setEnabledFeels] = useState<Set<TimingFeel>>(
     () => new Set(FEELS),
   )
-  const [copiedId, setCopiedId] = useState<string | null>(null)
-  const [shareStatus, setShareStatus] = useState('')
   const [tapResult, setTapResult] = useState<TapTempoResult>({
     bpm: null,
     status: 'waiting',
     intervalCount: 0,
     didReset: false,
   })
+  const [status, setStatus] = useState('')
+  const [isPlaying, setIsPlaying] = useState(false)
   const tapTempo = useRef(new TapTempo())
-  const eventTracker = useRef<ReturnType<
-    typeof createProductEventTracker
-  > | null>(null)
-  const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  if (eventTracker.current === null) {
-    eventTracker.current = createProductEventTracker()
-  }
+  const audioPreview = useRef<OneBarAudioPreview | null>(null)
+  const playTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const tracker = useRef(createProductEventTracker('bpm-delay-calculator'))
 
   useEffect(() => {
-    setIsHydrated(true)
-    const params = new URLSearchParams(window.location.search)
-    const sharedBpm = Number(params.get('bpm'))
-    const sharedDeviceMax = Number(params.get('max'))
-
-    if (isValidBpm(sharedBpm)) {
-      setBpmInput(sharedBpm.toFixed(1))
-      setQuarterNoteInput((60_000 / sharedBpm).toFixed(1))
-    }
-    if (Number.isFinite(sharedDeviceMax) && sharedDeviceMax > 0) {
-      setDeviceMaxInput(String(sharedDeviceMax))
+    const shared = parseDelayPatchSearch(window.location.search)
+    setState(shared)
+    setBpmInput(shared.bpm.toFixed(1))
+    setMaxInput(
+      shared.deviceMax === undefined ? '' : String(shared.deviceMax),
+    )
+    setQuarterNoteInput((60_000 / shared.bpm).toFixed(1))
+    setHydrated(true)
+    return () => {
+      audioPreview.current?.stop()
+      if (playTimer.current !== null) clearTimeout(playTimer.current)
     }
   }, [])
 
-  useEffect(
-    () => () => {
-      if (copyTimer.current !== null) clearTimeout(copyTimer.current)
-    },
-    [],
-  )
+  useEffect(() => {
+    if (!status) return
+    const timer = window.setTimeout(() => setStatus(''), 4_000)
+    return () => window.clearTimeout(timer)
+  }, [status])
 
-  const parsedBpm = Number(bpmInput)
-  const bpm = isValidBpm(parsedBpm) ? parsedBpm : null
-  const parsedDeviceMax = Number(deviceMaxInput)
-  const deviceMax =
-    deviceMaxInput === '' ||
-    !Number.isFinite(parsedDeviceMax) ||
-    parsedDeviceMax <= 0
-      ? undefined
-      : parsedDeviceMax
-
+  const patch = useMemo(() => calculateDelayPatch(state), [state])
   const rows = useMemo(
-    () => (bpm === null ? [] : calculateDelayRows(bpm, deviceMax)),
-    [bpm, deviceMax],
+    () => calculateDelayRows(state.bpm, state.deviceMax),
+    [state.bpm, state.deviceMax],
   )
-  const commonRows = COMMON_TIMING_IDS.map((id) =>
-    rows.find((row) => row.id === id),
-  ).filter((row): row is TimingRow => row !== undefined)
   const filteredRows = rows.filter((row) => enabledFeels.has(row.feel))
-  const longestAvailable = rows.reduce<TimingRow | undefined>(
-    (longest, row) => {
-      if (!row.isAvailable) return longest
-      if (longest === undefined || row.milliseconds > longest.milliseconds) {
-        return row
-      }
-      return longest
-    },
-    undefined,
-  )
+  const beatCount =
+    state.meter === '6-8' ? 6 : Number(state.meter.split('-')[0])
 
-  function updateBpm(nextValue: string) {
-    setBpmInput(nextValue)
-    const numericValue = Number(nextValue)
-    if (isValidBpm(numericValue)) {
-      setQuarterNoteInput((60_000 / numericValue).toFixed(1))
-    }
-  }
-
-  function track(
-    eventName: Parameters<
-      ReturnType<typeof createProductEventTracker>['track']
-    >[0],
-    detail: ProductEventDetail,
+  function setBpm(
+    value: string,
+    detail: 'bpm_input' | 'tap_tempo' | 'ms_to_bpm' = 'bpm_input',
   ) {
-    eventTracker.current?.track(eventName, detail)
-  }
-
-  function handleBpmInput(nextValue: string) {
-    updateBpm(nextValue)
-    track('tool_started', 'bpm_input')
-    if (isValidBpm(Number(nextValue))) {
-      track('calculation_completed', 'bpm_changed')
+    setBpmInput(value)
+    const bpm = Number(value)
+    tracker.current.track('tool_started', detail)
+    if (isValidBpm(bpm)) {
+      setState((current) => ({ ...current, bpm }))
+      setQuarterNoteInput((60_000 / bpm).toFixed(1))
+      tracker.current.track(
+        'calculation_completed',
+        detail === 'tap_tempo'
+          ? 'tap_result'
+          : detail === 'ms_to_bpm'
+            ? 'ms_to_bpm'
+            : 'bpm_changed',
+      )
     }
   }
 
   function handleTap() {
-    track('tool_started', 'tap_tempo')
     const result = tapTempo.current.tap(performance.now())
     setTapResult(result)
     if (result.bpm !== null && isValidBpm(result.bpm)) {
-      updateBpm(result.bpm.toFixed(1))
-      track(
+      setBpm(result.bpm.toFixed(1), 'tap_tempo')
+      tracker.current.track(
         'tap_used',
         result.status === 'stable' ? 'stable' : 'provisional',
       )
-      track('calculation_completed', 'tap_result')
     }
   }
 
-  function resetTap() {
-    setTapResult(tapTempo.current.reset())
+  function chooseRecipe(recipe: DelayRecipeId) {
+    setState((current) => ({ ...current, recipe }))
+    tracker.current.track('calculation_completed', 'recipe_changed')
   }
 
-  async function copyTiming(
-    row: TimingRow,
-    source: 'common_card' | 'full_table' = 'common_card',
-  ) {
+  function chooseOutput(output: OutputMode) {
+    setState((current) => ({ ...current, output }))
+    tracker.current.track('tool_started', 'output_changed')
+  }
+
+  function updateDeviceMax(value: string) {
+    setMaxInput(value)
+    const max = Number(value)
+    setState((current) => ({
+      ...current,
+      deviceMax:
+        value === '' || !Number.isFinite(max) || max <= 0 ? undefined : max,
+    }))
+    tracker.current.track('tool_started', 'device_limit')
+  }
+
+  async function copyPatch() {
     try {
-      await writeTextToClipboard(
-        `${formatMilliseconds(row.milliseconds)} ms`,
-      )
-      setCopiedId(row.id)
-      setShareStatus('')
-      track('value_copied', source)
-      if (copyTimer.current !== null) clearTimeout(copyTimer.current)
-      copyTimer.current = setTimeout(() => setCopiedId(null), 1_600)
+      await writeTextToClipboard(formatDelayPatchForClipboard(patch))
+      setStatus('Patch copied.')
+      tracker.current.track('value_copied', 'patch_copy')
     } catch {
-      setShareStatus('Clipboard access is unavailable in this browser.')
+      setStatus('Clipboard access is unavailable in this browser.')
     }
   }
 
-  async function shareConfiguration() {
-    if (bpm === null) return
-
+  async function sharePatch() {
     const url = new URL(window.location.href)
-    url.search = ''
-    url.searchParams.set('bpm', bpm.toFixed(1))
-    if (deviceMax !== undefined) url.searchParams.set('max', String(deviceMax))
-
-    const shareData = {
-      title: 'BPM to MS calculator',
-      text: `${bpm.toFixed(1)} BPM delay timing table`,
-      url: url.toString(),
-    }
-
-    if (navigator.share !== undefined) {
-      try {
-        await navigator.share(shareData)
-        setShareStatus('Shared.')
-        track('share_clicked', 'native_share')
-        return
-      } catch (error) {
-        if (error instanceof DOMException && error.name === 'AbortError') {
-          setShareStatus('Share canceled.')
-          return
-        }
-      }
-    }
-
+    url.search = serializeDelayPatchState(state)
     try {
       await writeTextToClipboard(url.toString())
-      setShareStatus('Share link copied.')
-      track('share_clicked', 'link_copy')
+      window.history.replaceState(
+        {},
+        '',
+        `${url.pathname}?${url.searchParams.toString()}`,
+      )
+      setStatus('Share link copied.')
+      tracker.current.track('share_clicked', 'link_copy')
     } catch {
-      setShareStatus('Clipboard access is unavailable in this browser.')
+      setStatus('Clipboard access is unavailable in this browser.')
     }
   }
 
-  function toggleFeel(feel: TimingFeel) {
-    setEnabledFeels((current) => {
-      const next = new Set(current)
-      if (next.has(feel)) {
-        if (next.size > 1) next.delete(feel)
-      } else {
-        next.add(feel)
-      }
-      return next
-    })
+  async function previewPattern() {
+    if (isPlaying) {
+      audioPreview.current?.stop()
+      setIsPlaying(false)
+      return
+    }
+    audioPreview.current ??= new OneBarAudioPreview()
+    const duration = await audioPreview.current.play(patch)
+    setIsPlaying(true)
+    tracker.current.track('audio_previewed', 'pattern_preview')
+    playTimer.current = setTimeout(() => setIsPlaying(false), duration)
   }
 
-  function useQuarterNoteDuration() {
+  function convertQuarterNote() {
     const milliseconds = Number(quarterNoteInput)
     if (!Number.isFinite(milliseconds) || milliseconds <= 0) return
-    const convertedBpm = bpmFromQuarterNoteMs(milliseconds)
-    track('tool_started', 'ms_to_bpm')
-    if (isValidBpm(convertedBpm)) {
-      updateBpm(convertedBpm.toFixed(1))
-      track('calculation_completed', 'ms_to_bpm')
-    }
+    const bpm = bpmFromQuarterNoteMs(milliseconds)
+    if (isValidBpm(bpm)) setBpm(bpm.toFixed(1), 'ms_to_bpm')
   }
 
-  const bpmError =
-    bpm === null ? 'Enter a BPM from 20 to 400.' : ''
-  const tapStatus =
-    tapResult.status === 'waiting'
-      ? 'Tap at least twice'
-      : tapResult.status === 'provisional'
-        ? 'Provisional — tap again'
-        : tapResult.status === 'stable'
-          ? 'Stable timing'
-          : 'Keep tapping for a steadier result'
+  const bpmError = isValidBpm(Number(bpmInput))
+    ? ''
+    : 'Enter a BPM from 20 to 400.'
+  const tapLabel =
+    tapResult.bpm === null
+      ? 'Tap tempo'
+      : `${tapResult.bpm.toFixed(1)} BPM · ${tapResult.status}`
 
   return (
     <section
-      className="calculator-workspace"
-      aria-label="BPM delay calculator"
-      data-hydrated={isHydrated ? 'true' : 'false'}
+      className="patch-builder"
+      data-hydrated={hydrated ? 'true' : 'false'}
+      aria-label="Delay patch builder"
     >
-      <div className="control-panel">
-        <div className="control-block">
-          <label htmlFor="bpm" className="field-label">
-            Tempo
-          </label>
-          <div className="number-field">
+      <div className="builder-step tempo-step">
+        <div className="step-heading">
+          <span>1</span>
+          <div>
+            <p className="step-kicker">Tempo</p>
+            <h2>Set the song pulse</h2>
+          </div>
+        </div>
+        <div className="tempo-row">
+          <label className="compact-number-field" htmlFor="bpm">
+            <span className="sr-only">Tempo</span>
             <input
               id="bpm"
-              name="bpm"
               type="number"
               min="20"
               max="400"
               step="0.1"
               inputMode="decimal"
               value={bpmInput}
-              onChange={(event) => handleBpmInput(event.target.value)}
-              aria-describedby={bpmError ? 'bpm-error' : 'bpm-help'}
+              onChange={(event) => setBpm(event.target.value)}
               aria-invalid={bpmError !== ''}
             />
-            <span>BPM</span>
-          </div>
-          {bpmError ? (
-            <p id="bpm-error" className="field-error">
-              {bpmError}
-            </p>
-          ) : (
-            <p id="bpm-help" className="field-help">
-              20–400 BPM · one decimal supported
-            </p>
-          )}
+            <strong>BPM</strong>
+          </label>
+          <button type="button" className="tap-compact" onClick={handleTap} aria-label={tapLabel}>
+            <Waveform size={20} weight="bold" />
+            <span aria-hidden="true">Tap</span>
+          </button>
         </div>
+        {bpmError ? <p className="field-error">{bpmError}</p> : null}
+        <div className="meter-row" aria-label="Time signature">
+          {METERS.map((meter) => (
+            <button
+              key={meter.id}
+              type="button"
+              className={
+                state.meter === meter.id
+                  ? 'choice-chip is-selected'
+                  : 'choice-chip'
+              }
+              onClick={() =>
+                setState((current) => ({ ...current, meter: meter.id }))
+              }
+            >
+              {meter.label}
+            </button>
+          ))}
+        </div>
+      </div>
 
-        <div className="tap-block">
-          <div className="tap-heading">
-            <div>
-              <p className="field-label">Tap tempo</p>
-              <p className={`tap-status tap-status-${tapResult.status}`}>
-                {tapStatus}
+      <section className="patch-result" aria-live="polite">
+        <div className="patch-result-heading">
+          <div>
+            <p className="eyebrow">Your delay patch</p>
+            <h2>{patch.recipe.name}</h2>
+            <p>{patch.recipe.character}</p>
+          </div>
+          <SlidersHorizontal size={28} weight="duotone" aria-hidden="true" />
+        </div>
+        <div
+          className={`channel-grid ${state.output === 'mono' ? 'is-mono' : ''}`}
+        >
+          {patch.channels.map((result) => (
+            <article
+              className={`channel-card channel-card-${result.side}`}
+              key={result.side}
+            >
+              <div className="channel-topline">
+                <SideBadge side={result.side} />
+                {result.isAvailable ? (
+                  <span className="compatibility is-compatible">
+                    <CheckCircle size={16} weight="fill" />
+                    Fits
+                  </span>
+                ) : (
+                  <span className="compatibility is-over">
+                    <WarningCircle size={16} weight="fill" />
+                    Over max
+                  </span>
+                )}
+              </div>
+              <p className="channel-time">
+                {formatMilliseconds(result.milliseconds)}
+                <span>ms</span>
               </p>
+              <p className="channel-note">{result.label}</p>
+              {!result.isAvailable && result.alternative ? (
+                <p className="alternative">
+                  Try {result.alternative.label} ·{' '}
+                  {formatMilliseconds(result.alternative.milliseconds)} ms
+                </p>
+              ) : null}
+            </article>
+          ))}
+        </div>
+        {patch.ratio ? (
+          <p className="ratio-line">
+            Stereo relationship <strong>{patch.ratio}</strong>
+          </p>
+        ) : null}
+        <div className="timeline-card">
+          <div className="timeline-heading">
+            <div>
+              <p>One-bar echo pattern</p>
+              <span>
+                {state.meter.replace('-', '/')} · dry attack plus repeat taps
+              </span>
             </div>
-            <button type="button" className="text-button" onClick={resetTap}>
-              Reset
+            <button
+              type="button"
+              className="preview-button"
+              onClick={previewPattern}
+            >
+              {isPlaying ? (
+                <Stop size={18} weight="fill" />
+              ) : (
+                <Play size={18} weight="fill" />
+              )}
+              {isPlaying ? 'Stop' : 'Preview pattern'}
             </button>
           </div>
+          <div className="timeline" aria-label="One bar delay timeline">
+            {Array.from({ length: beatCount + 1 }, (_, index) => (
+              <span
+                key={`beat-${index}`}
+                className="beat-line"
+                style={{ left: `${(index / beatCount) * 100}%` }}
+              />
+            ))}
+            {patch.markers.map((marker) => (
+              <span
+                key={marker.id}
+                className={`timeline-marker marker-${marker.channel}`}
+                style={{ left: `${marker.position * 100}%` }}
+                title={`${marker.channel} ${formatMilliseconds(marker.milliseconds)} ms`}
+              />
+            ))}
+          </div>
+          <div className="timeline-legend">
+            <span><i className="legend-dry" />Dry</span>
+            <span><i className="legend-left" />Left / Mono</span>
+            {state.output === 'stereo' ? (
+              <span><i className="legend-right" />Right</span>
+            ) : null}
+          </div>
+        </div>
+        <div className="patch-actions">
+          <button type="button" className="primary-button" onClick={copyPatch}>
+            <ClipboardText size={19} />
+            Copy patch
+          </button>
           <button
             type="button"
-            className="tap-button"
-            onClick={handleTap}
-            aria-describedby="tap-instruction"
+            className="secondary-button"
+            onClick={sharePatch}
           >
-            <span className="tap-pulse" aria-hidden="true" />
-            <span>Tap</span>
-            <span className="tap-reading">
-              {tapResult.bpm === null ? '—' : `${tapResult.bpm.toFixed(1)} BPM`}
-            </span>
+            <LinkSimple size={19} />
+            Share
           </button>
-          <p id="tap-instruction" className="field-help">
-            Click or focus and press Space. No microphone required.
-          </p>
         </div>
+        <p className="screen-status" aria-live="polite">{status}</p>
+      </section>
 
-        <div className="control-block device-control">
-          <label htmlFor="device-max" className="field-label">
-            Device max delay <span>Optional</span>
-          </label>
-          <div className="number-field number-field-secondary">
+      <div className="builder-step rhythm-step">
+        <div className="step-heading">
+          <span>2</span>
+          <div>
+            <p className="step-kicker">Rhythm</p>
+            <h2>Choose the repeat character</h2>
+          </div>
+        </div>
+        <div className="recipe-list">
+          {DELAY_RECIPES.map((recipe) => (
+            <button
+              key={recipe.id}
+              type="button"
+              className={
+                state.recipe === recipe.id
+                  ? 'recipe-option is-selected'
+                  : 'recipe-option'
+              }
+              onClick={() => chooseRecipe(recipe.id)}
+            >
+              <RecipeIcon id={recipe.id} />
+              <span>
+                <strong>{recipe.name}</strong>
+                <small>{recipe.character}</small>
+              </span>
+              <span className="recipe-description">{recipe.useCase}</span>
+              <ArrowRight size={18} weight="bold" />
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="builder-step output-step">
+        <div className="step-heading">
+          <span>3</span>
+          <div>
+            <p className="step-kicker">Output</p>
+            <h2>Match your pedal</h2>
+          </div>
+        </div>
+        <div className="segmented-control" aria-label="Output mode">
+          {(['mono', 'stereo'] as OutputMode[]).map((output) => (
+            <button
+              key={output}
+              type="button"
+              className={state.output === output ? 'is-selected' : ''}
+              onClick={() => chooseOutput(output)}
+            >
+              {output === 'mono' ? (
+                <SpeakerHigh size={18} />
+              ) : (
+                <Waveform size={18} />
+              )}
+              {output}
+            </button>
+          ))}
+        </div>
+        <label className="stacked-field" htmlFor="device-max">
+          <span>Maximum delay <small>Optional</small></span>
+          <div>
             <input
               id="device-max"
-              name="max"
               type="number"
               min="1"
               step="1"
               inputMode="numeric"
               placeholder="e.g. 2000"
-              value={deviceMaxInput}
-              onChange={(event) => {
-                setDeviceMaxInput(event.target.value)
-                track('tool_started', 'device_limit')
-              }}
+              value={maxInput}
+              onChange={(event) => updateDeviceMax(event.target.value)}
             />
-            <span>ms</span>
+            <strong>ms</strong>
           </div>
-          <p className="field-help">
-            Check your pedal or plugin manual for its maximum delay time.
-          </p>
-          {deviceMax !== undefined && longestAvailable !== undefined ? (
-            <p className="device-hint">
-              <span aria-hidden="true">✓</span> Longest in-range setting:{' '}
-              <strong>{longestAvailable.label}</strong>
-            </p>
-          ) : null}
-        </div>
+        </label>
+      </div>
 
-        <details className="reverse-converter">
-          <summary>Convert ms to BPM</summary>
-          <div className="reverse-converter-body">
-            <label htmlFor="quarter-note-ms">Quarter-note duration</label>
-            <div className="inline-converter">
-              <div className="number-field number-field-secondary">
+      <details className="reference-panel">
+        <summary>Reference table & reverse converter</summary>
+        <div className="reference-toolbar">
+          <div className="feel-filters">
+            {FEELS.map((feel) => (
+              <label key={feel}>
                 <input
-                  id="quarter-note-ms"
-                  type="number"
-                  min="150"
-                  max="3000"
-                  step="0.1"
-                  value={quarterNoteInput}
-                  onChange={(event) => setQuarterNoteInput(event.target.value)}
+                  type="checkbox"
+                  checked={enabledFeels.has(feel)}
+                  onChange={() =>
+                    setEnabledFeels((current) => {
+                      const next = new Set(current)
+                      if (next.has(feel) && next.size > 1) next.delete(feel)
+                      else next.add(feel)
+                      return next
+                    })
+                  }
                 />
-                <span>ms</span>
-              </div>
-              <button
-                type="button"
-                className="secondary-button"
-                onClick={useQuarterNoteDuration}
-              >
-                Use this BPM
-              </button>
-            </div>
+                <span>{feel}</span>
+              </label>
+            ))}
           </div>
-        </details>
-      </div>
-
-      <div className="results-panel">
-        <div className="results-heading">
-          <div>
-            <p className="eyebrow">Common delay times</p>
-            <h2>
-              {bpm === null ? 'Waiting for a valid tempo' : `At ${bpm.toFixed(1)} BPM`}
-            </h2>
-          </div>
-          <button
-            type="button"
-            className="share-button"
-            onClick={shareConfiguration}
-            disabled={bpm === null}
-          >
-            Share setup
-          </button>
-        </div>
-
-        <div className="timing-grid" aria-live="polite">
-          {commonRows.map((row) => (
-            <TimingCard
-              key={row.id}
-              row={row}
-              copied={copiedId === row.id}
-              onCopy={copyTiming}
+          <div className="reverse-inline">
+            <label htmlFor="quarter-note-ms">Quarter-note ms</label>
+            <input
+              id="quarter-note-ms"
+              type="number"
+              min="150"
+              max="3000"
+              step="0.1"
+              value={quarterNoteInput}
+              onChange={(event) => setQuarterNoteInput(event.target.value)}
             />
-          ))}
+            <button type="button" onClick={convertQuarterNote}>Use BPM</button>
+          </div>
         </div>
-
-        <details className="full-table">
-          <summary>View full timing table</summary>
-          <div className="table-toolbar">
-            <p>Filter feel</p>
-            <div className="feel-filters">
-              {FEELS.map((feel) => (
-                <label key={feel}>
-                  <input
-                    type="checkbox"
-                    checked={enabledFeels.has(feel)}
-                    onChange={() => toggleFeel(feel)}
-                  />
-                  <span>{feel}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-          <div className="table-scroll">
-            <table>
-              <caption className="sr-only">
-                Note timing values in fixed musical order
-              </caption>
-              <thead>
-                <tr>
-                  <th scope="col">Note</th>
-                  <th scope="col">Feel</th>
-                  <th scope="col">Time</th>
-                  <th scope="col">Rate</th>
-                  <th scope="col">Device</th>
-                  <th scope="col">
-                    <span className="sr-only">Copy</span>
-                  </th>
+        <div className="table-scroll">
+          <table>
+            <caption className="sr-only">
+              Complete BPM to milliseconds and hertz table
+            </caption>
+            <thead>
+              <tr>
+                <th>Note</th><th>Feel</th><th>Time</th><th>Rate</th>
+                <th>Device</th><th><span className="sr-only">Copy</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredRows.map((row) => (
+                <tr key={row.id} className={row.isAvailable ? '' : 'is-over'}>
+                  <th>{row.note}</th>
+                  <td>{row.feel}</td>
+                  <td className="mono-cell">{formatMilliseconds(row.milliseconds)} ms</td>
+                  <td className="mono-cell">{row.hertz.toFixed(3)} Hz</td>
+                  <td>{row.isAvailable ? 'In range' : 'Over max'}</td>
+                  <td>
+                    <button
+                      type="button"
+                      className="icon-button"
+                      aria-label={`Copy ${formatMilliseconds(row.milliseconds)} milliseconds`}
+                      onClick={() =>
+                        void writeTextToClipboard(
+                          `${formatMilliseconds(row.milliseconds)} ms`,
+                        )
+                      }
+                    >
+                      <Copy size={17} />
+                    </button>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {filteredRows.map((row) => (
-                  <tr key={row.id} className={row.isAvailable ? '' : 'is-over'}>
-                    <th scope="row">{row.note}</th>
-                    <td>{row.feel}</td>
-                    <td className="mono-cell">
-                      {formatMilliseconds(row.milliseconds)} ms
-                    </td>
-                    <td className="mono-cell">{row.hertz.toFixed(3)} Hz</td>
-                    <td>
-                      <Availability isAvailable={row.isAvailable} />
-                    </td>
-                    <td>
-                      <button
-                        type="button"
-                        className="table-copy"
-                        onClick={() => copyTiming(row, 'full_table')}
-                      >
-                        {copiedId === row.id ? 'Copied' : 'Copy'}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </details>
-
-        <p className="screen-status" aria-live="polite">
-          {shareStatus}
-        </p>
-      </div>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </details>
     </section>
   )
 }

@@ -2,29 +2,37 @@
 
 ## 当前已完成任务
 
-- 完成市场、关键词、SERP、竞品和 SEO 风险复核，并将 MVP 裁决及用户确认后的范围记录在 `docs/05-关键词SERP与MVP裁决.md` 与 `docs/06-MVP实施决策.md`。
-- 完成 Cloudflare Workers + Static Assets、TanStack Start、React 19、TypeScript、Tailwind 和 npm lockfile 的项目架构；关键依赖已固定为本次验证版本。
-- 完成 US English BPM to MS & Delay Time Calculator：支持 20–400 BPM、直音/附点/三连音 1/1–1/64、Hz、常用卡片、完整表格、feel 筛选、ms→BPM、单值复制和可分享 URL。
-- 完成用户导向的 Tap Tempo：最多最近 8 次、异常间隔过滤、自适应重置、第二拍 provisional、第三拍起 stable，并提供明确状态反馈。
-- 完成可选设备最大延迟检查、非颜色可用性标识及按实际毫秒值计算的“最长可用设置”建议。
-- 完成响应式浅色/深色/系统主题设计：首页、工具页、About、Methodology、Privacy、Terms；桌面和 Pixel 7 视口无横向溢出。
-- 完成 SEO 基础设施：六个页面预渲染、唯一 title/description/canonical、英文语言声明、WebApplication 结构化数据、robots.txt 和自动 sitemap；canonical 已与最终 200 URL 统一。
-- 完成隐私优先分析接口：同源 `/api/events` 只接受事件、工具和分类白名单，拒绝 BPM 等原始输入字段；Cloudflare Analytics Engine 预览与正式数据集已隔离。
-- 完成测试与发布检查：17 个单元/接口测试、TypeScript 类型检查、桌面/移动端 Playwright 关键旅程、axe 自动无障碍扫描、正式与 noindex 预览构建、Cloudflare dry-run 均通过。
-- 已将 noindex 版本部署到独立的 `musiciantools-preview` Worker；线上页面、canonical、规范 URL 重定向、90 BPM 客户端计算和匿名事件接口均已回归通过，正式 Worker 未部署。
+- 完成 Cloudflare Workers + Static Assets、TanStack Start、React 19、TypeScript、Tailwind 的项目架构，并保留独立的 `musiciantools-preview` 预览环境。
+- 将原 BPM 计算器重构为面向吉他手和效果器用户的 Delay Patch Builder：支持 20–400 BPM、Tap Tempo、3/4/4/4/6/8、五种音乐配方、Mono/Stereo、左右声道关系、设备最大延迟与分声道兼容建议。
+- 完成一小节 Web Audio 试听：仅由用户操作触发，不循环、不使用麦克风，重播和卸载会取消旧调度。
+- 保留完整 21 项 BPM→ms/Hz 参考表、feel 筛选和 ms→BPM；新增完整 Patch 复制及可恢复 URL 分享。
+- 完成单弦长专业版 Fret Calculator：10 种乐器预设、自定义弦长、mm/in、1–36 品、从上弦枕累计位置、相邻品距、剩余弦长、第 12 品半弦长校验和可交互品板图。
+- 完成 Fret Calculator 三种工作台导出：CSV、带 100 mm/4 in 校准尺的 1:1 SVG、支持 US Letter/A4、10 mm 重叠、拼接标记和 Actual Size 提示的分页 PDF。
+- 按制琴用户的实际制作流程深化 Fret Calculator：新增“末品 / 板尾 / 理论桥位”三种模板范围、Nut/末端板宽与板尾余量、真实锥形品板、可操作的 100%–300% 预览缩放，并让预览、SVG、PDF 共用同一几何模型。
+- 修复 Letter PDF 孤立空白页：默认 25.5 英寸 / 24 品为 2 页；理论桥位模式为 3 页且第 3 页含明确桥位参考线。每页均含 100 mm/4 in 校准尺和 10 mm 对齐标记。
+- 修复 Pixel 7 单位切换器和模板说明裁切；分享 URL 现可恢复完整制作参数，并消除公制浮点噪声。
+- 按真实使用顺序优化 Fret Calculator：工作台模板选项默认折叠但保留当前范围摘要，移动端在 900 CSS px 内看到计算结果；新增模板一键重置、字段级错误关联、整行品位选择、24 px 品丝触控热区和明确键盘焦点态。
+- 修正理论桥位模式的几何语义：实体品板在用户设置的板尾结束，仅中心参考线继续到理论桥位；页面预览、SVG 与分页 PDF 均区分 BOARD END 和 THEORETICAL BRIDGE REFERENCE。
+- 将 PDF 引擎改为点击导出时按需加载，并新增准备中、成功和可恢复失败反馈；Fret 首屏客户端分块降至 56.40 kB（gzip 15.94 kB），423.67 kB PDF 分块不再进入普通计算流程。
+- 修复自动化曾漏检的 Pixel 7 内部网格裁切：弦长、品数、单位、放大控件、结果区与导出区现全部位于工具边界内，并新增内部子区边界回归断言。
+- 按用户选定的 Product Design 第 3 套 Patch Builder 方向重构全站：米白、深海军蓝、橙色、青色、绿色；使用 Instrument Sans、IBM Plex Mono 和 Phosphor 图标；首页首屏直接展示两个深度工具。
+- 完成浅色/深色/系统主题、桌面与 Pixel 7 响应式布局、键盘操作、WCAG AA 对比度与 axe 自动无障碍检查。
+- 完成两个工具的 SEO 页面：唯一 title/description/canonical、WebApplication 结构化数据、预渲染、导航、首页内链和 sitemap。
+- 扩展隐私优先匿名产品事件：新增音频试听与导出事件，并支持两个工具；仍不上传 BPM、弦长、品数等原始输入。
+- 完成 42 项单元/接口测试与 18 项浏览器验收场景；类型检查、生产构建、桌面/移动端主流程、三种导出、PDF 实际页数、控制台错误、axe、控件裁切和横向溢出均通过。
+- 完成 Product Design 视觉 QA；参考图与实现图已做同状态全视图和聚焦区域对比，`design-qa.md` 最终结果为 `passed`。
+- 已将本轮版本仅部署到现有 `musiciantools-preview`，版本 ID 为 `f05253d5-64db-4f41-9685-2043d9645acd`；线上 Pixel 7 折叠设置、内部边界、Bridge 三页模式、PDF 按需加载、noindex 与 canonical 回归通过，正式环境未部署。
 
 ## 未完成任务
 
-- 尚未由用户在预览 URL 上执行最终验收；正式环境未部署。
-- 尚未配置正式域名、Cloudflare Web Analytics token、Google Search Console 与 `hello@musiciantools.app` 邮件路由。
-- Privacy 与 Terms 当前为项目草案，正式发布前仍需站长确认并视情况进行法律审核。
-- 尚未补齐 Semrush 五个词的 US 数据库口径、设备、12 个月趋势、CPC、SERP Features、Phrase Match、Related、Questions 和前十 URL/外链导出。
-- 尚未确认 D’Addario、Stringjoy 等琴弦数据的使用边界，并建立首版可追溯的 Unit Weight 数据集。
-- 尚未完成目标用户访谈：需要 3–5 位有 Drop tuning、7/8-string 或换弦长经验的吉他手，以及 1–2 位制琴/维修用户。
+- 尚未由用户在新版预览 URL 上进行真实乐器/效果器工作流验收。
+- 正式域名、Cloudflare Web Analytics token、Google Search Console 与 `hello@musiciantools.app` 邮件路由尚未配置。
+- Privacy 与 Terms 仍为项目草案，正式发布前需要站长确认并视情况进行法律审核。
+- String Tension Calculator 仍暂缓，尚未取得可追溯 Unit Weight 数据集及数据使用边界结论。
+- Fret Calculator 暂不包含 multiscale/fanned fret、琴桥补偿或音准补偿。
 
 ## 下一步要做的任务
 
-1. 用户在预览环境执行真实设备验收，重点检查 Tap 手感、设备上限建议、复制/分享和移动端可读性；修复验收问题后再讨论正式发布。
-2. 正式发布前完成域名、Web Analytics、GSC、邮件路由和法律文本确认，然后单独取得生产部署授权。
-3. 上线后观察真实 Search Console 与匿名产品事件 8–12 周，再决定是否进入 String Tension Compare 和 Fret Calculator。
-4. 并行执行 `docs/05-关键词SERP与MVP裁决.md` 中尚未完成的 Semrush、琴弦数据授权和目标用户访谈工作。
+1. 用户在真实手机、效果器和打印机上验收一小节试听、设备限制建议、1:1 SVG/PDF 校准尺与分页拼接。
+2. 根据预览验收修复问题；正式环境继续保持禁止部署，直到单独获得生产发布授权。
+3. 上线后观察 Search Console 与匿名产品事件，再决定 String Tension 数据授权工作和 multiscale Fret v2。

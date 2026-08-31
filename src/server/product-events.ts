@@ -5,11 +5,13 @@ const EVENT_NAMES = new Set([
   'tool_started',
   'calculation_completed',
   'tap_used',
+  'audio_previewed',
   'value_copied',
   'share_clicked',
+  'export_created',
 ])
 
-const TOOL_IDS = new Set(['bpm-delay-calculator'])
+const TOOL_IDS = new Set(['bpm-delay-calculator', 'fret-calculator'])
 
 const EVENT_DETAILS = new Set([
   'bpm_input',
@@ -24,6 +26,17 @@ const EVENT_DETAILS = new Set([
   'full_table',
   'native_share',
   'link_copy',
+  'recipe_changed',
+  'output_changed',
+  'pattern_preview',
+  'patch_copy',
+  'preset_changed',
+  'custom_scale',
+  'fret_count_changed',
+  'unit_changed',
+  'csv_export',
+  'svg_export',
+  'pdf_export',
   'none',
 ])
 

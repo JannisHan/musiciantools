@@ -7,7 +7,7 @@ export const Route = createFileRoute('/methodology')({
       {
         name: 'description',
         content:
-          'The formulas, rounding rules, device-limit logic, and Tap Tempo method used by Musician Tools.',
+          'The timing and fret-position formulas, rounding rules, print assumptions, and Tap Tempo method used by Musician Tools.',
       },
     ],
     links: [
@@ -21,11 +21,11 @@ function MethodologyPage() {
   return (
     <main className="content-page page-shell">
       <p className="eyebrow">Methodology</p>
-      <h1>What the calculator does with your tempo.</h1>
+      <h1>The math behind every result.</h1>
       <p className="content-lead">
-        The BPM / Delay calculator uses standard musical timing relationships.
-        It does not estimate hardware behavior or modify results for a specific
-        brand.
+        Both tools use documented formulas and full-precision internal values.
+        Device behavior, intonation compensation, and material tolerances remain
+        the responsibility of the musician or builder.
       </p>
       <div className="method-list">
         <section>
@@ -72,8 +72,30 @@ function MethodologyPage() {
             </p>
           </div>
         </section>
+        <section>
+          <span>05</span>
+          <div>
+            <h2>Fret positions</h2>
+            <p>
+              Fret centerline <code>n</code> is measured from the nut using
+              <code>L × (1 − 2^(-n/12))</code>. Each position is calculated
+              independently from the nut to prevent accumulated spacing error.
+            </p>
+          </div>
+        </section>
+        <section>
+          <span>06</span>
+          <div>
+            <h2>Physical exports</h2>
+            <p>
+              SVG uses millimeter dimensions. PDF layouts are tiled with 10 mm
+              overlap and include a calibration ruler. Print at 100% / Actual
+              Size and verify the ruler before cutting.
+            </p>
+          </div>
+        </section>
       </div>
-      <p className="revision-note">Method revision: 1.0 · August 30, 2026</p>
+      <p className="revision-note">Method revision: 2.0 · August 31, 2026</p>
     </main>
   )
 }
