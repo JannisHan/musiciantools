@@ -34,6 +34,8 @@ const EVENT_DETAILS = new Set([
   'custom_scale',
   'fret_count_changed',
   'unit_changed',
+  'template_geometry_changed',
+  'template_extent_changed',
   'csv_export',
   'svg_export',
   'pdf_export',

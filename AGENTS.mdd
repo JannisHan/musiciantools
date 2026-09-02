@@ -19,14 +19,16 @@
 - 完成浅色/深色/系统主题、桌面与 Pixel 7 响应式布局、键盘操作、WCAG AA 对比度与 axe 自动无障碍检查。
 - 完成两个工具的 SEO 页面：唯一 title/description/canonical、WebApplication 结构化数据、预渲染、导航、首页内链和 sitemap。
 - 扩展隐私优先匿名产品事件：新增音频试听与导出事件，并支持两个工具；仍不上传 BPM、弦长、品数等原始输入。
-- 完成 42 项单元/接口测试与 18 项浏览器验收场景；类型检查、生产构建、桌面/移动端主流程、三种导出、PDF 实际页数、控制台错误、axe、控件裁切和横向溢出均通过。
+- 完成 44 项单元/接口测试与 18 项浏览器验收场景；类型检查、生产构建、桌面/移动端主流程、三种导出、PDF 实际页数、控制台错误、axe、控件裁切和横向溢出均通过。
 - 完成 Product Design 视觉 QA；参考图与实现图已做同状态全视图和聚焦区域对比，`design-qa.md` 最终结果为 `passed`。
-- 已将本轮版本仅部署到现有 `musiciantools-preview`，版本 ID 为 `f05253d5-64db-4f41-9685-2043d9645acd`；线上 Pixel 7 折叠设置、内部边界、Bridge 三页模式、PDF 按需加载、noindex 与 canonical 回归通过，正式环境未部署。
+- 已更新现有 `musiciantools-preview`，版本 ID 为 `f05253d5-64db-4f41-9685-2043d9645acd`；线上 Pixel 7 折叠设置、内部边界、Bridge 三页模式、PDF 按需加载、noindex 与 canonical 回归通过。
+- 已创建并部署正式 `musiciantools` Worker，版本 ID 为 `5cac9f54-aad1-44ba-870f-455a844c6471`，地址为 `https://musiciantools.networktroubleshooting.workers.dev`；生产页面无 noindex，robots 允许抓取并指向正式 sitemap，canonical 指向 `musiciantools.app`。
+- 修复正式验收发现的匿名事件 HTTP 400：服务端白名单补齐 `template_extent_changed` 与 `template_geometry_changed`，保留未知事件和原始输入拒绝策略；两个事件线上均返回 204。
 
 ## 未完成任务
 
-- 尚未由用户在新版预览 URL 上进行真实乐器/效果器工作流验收。
-- 正式域名、Cloudflare Web Analytics token、Google Search Console 与 `hello@musiciantools.app` 邮件路由尚未配置。
+- 尚未由用户使用真实乐器、效果器与打印机验收正式版本。
+- `musiciantools.app` 自定义域名尚未绑定到正式 Worker；Cloudflare Web Analytics token、Google Search Console 与 `hello@musiciantools.app` 邮件路由尚未配置。
 - Privacy 与 Terms 仍为项目草案，正式发布前需要站长确认并视情况进行法律审核。
 - String Tension Calculator 仍暂缓，尚未取得可追溯 Unit Weight 数据集及数据使用边界结论。
 - Fret Calculator 暂不包含 multiscale/fanned fret、琴桥补偿或音准补偿。
@@ -34,5 +36,5 @@
 ## 下一步要做的任务
 
 1. 用户在真实手机、效果器和打印机上验收一小节试听、设备限制建议、1:1 SVG/PDF 校准尺与分页拼接。
-2. 根据预览验收修复问题；正式环境继续保持禁止部署，直到单独获得生产发布授权。
+2. 根据正式站验收修复问题；确认 DNS 与域名归属后，再单独配置 `musiciantools.app` 自定义域名。
 3. 上线后观察 Search Console 与匿名产品事件，再决定 String Tension 数据授权工作和 multiscale Fret v2。

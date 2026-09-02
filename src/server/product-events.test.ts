@@ -98,4 +98,42 @@ describe('POST /api/events', () => {
 
     expect(response.status).toBe(204)
   })
+
+  it('accepts the fret template extent enum without raw dimensions', async () => {
+    const writeDataPoint = vi.fn()
+    const response = await handleProductEventRequest(
+      new Request('https://musiciantools.app/api/events', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          eventName: 'calculation_completed',
+          toolId: 'fret-calculator',
+          detail: 'template_extent_changed',
+        }),
+      }),
+      { writeDataPoint },
+    )
+
+    expect(response.status).toBe(204)
+    expect(writeDataPoint).toHaveBeenCalledOnce()
+  })
+
+  it('accepts the fret template geometry enum without raw dimensions', async () => {
+    const writeDataPoint = vi.fn()
+    const response = await handleProductEventRequest(
+      new Request('https://musiciantools.app/api/events', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          eventName: 'calculation_completed',
+          toolId: 'fret-calculator',
+          detail: 'template_geometry_changed',
+        }),
+      }),
+      { writeDataPoint },
+    )
+
+    expect(response.status).toBe(204)
+    expect(writeDataPoint).toHaveBeenCalledOnce()
+  })
 })
