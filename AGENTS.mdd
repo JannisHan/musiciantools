@@ -25,6 +25,15 @@
 - 已创建并部署正式 `musiciantools` Worker，版本 ID 为 `5cac9f54-aad1-44ba-870f-455a844c6471`，地址为 `https://musiciantools.networktroubleshooting.workers.dev`；生产页面无 noindex，robots 允许抓取并指向正式 sitemap，canonical 指向 `musiciantools.app`。
 - 修复正式验收发现的匿名事件 HTTP 400：服务端白名单补齐 `template_extent_changed` 与 `template_geometry_changed`，保留未知事件和原始输入拒绝策略；两个事件线上均返回 204。
 - 已将 `musiciantools.app` 根域名绑定到正式 Worker，生产版本 ID 为 `7f098c29-a6f5-4d16-bb58-26576e0a9dbf`；HTTPS 证书、首页、两个核心工具、Methodology、robots、sitemap 与匿名事件接口均通过线上检查。Wrangler 配置已显式隔离 production 自定义域名与 preview 的 `workers.dev` 地址。
+- 新增英文博客入口 `/blog` 与首篇深度文章 `/blog/printable-fret-template-guide`，以 `printable fret template` 信息型意图承接 Fret Calculator 的 1:1 SVG、分页 PDF、校准尺与拼接标记能力，避免与工具页的 `fret calculator` 主词内耗。
+- 完成文章 TDK、焦点词与长尾词布局、Article Schema、5 条 FAQ、25.5 英寸 / 24 品实测基线、自然内链以及 5 张真实产品 WebP 配图；图片使用英文文件名、语义 ALT，单图约 6–48 KB。
+- 在主导航、页脚、首页和 Fret Calculator 工具页加入博客内链；生产构建已将博客索引与文章预渲染并写入 sitemap。
+- 完成博客桌面与 Pixel 7 浏览器验收：正文、TDK、Article Schema、CTA、控制台、axe 无障碍和横向溢出均通过；全项目 44 项单元测试、18 项浏览器回归、类型检查与生产构建继续通过。
+- 根据用户提供的 2026 关键词数据新增 5 个独立英文 SEO 博客页：`/blog/guitar-string-tension-calculator`、`/blog/bpm-to-ms`、`/blog/delay-time-calculator`、`/blog/fret-calculator`、`/blog/fret-spacing-calculator`；分别承接张力数据可信度、录音参数换算、Delay Patch、品位公式解读与制琴放样意图，避免近重复正文。
+- 五页均完成独立 TDK（Title 50–53 字符、Description 139–150 字符）、canonical、焦点词与长尾词、Article Schema、5 条 FAQ、数据/案例表、结论 CTA 及每页 5 张唯一配图；Delay/Fret 使用真实工具 WebP 截图，String Tension 使用本地轻量 SVG 数据图。
+- 新增可复用的服务端关键词文章模板和博客关键词目录；博客索引展示搜索量/KD 规划快照，两个工具页增加对应文章集群内链，生产构建已将 5 个 URL 预渲染并写入 sitemap。
+- 为五页新增永久 SEO 浏览器回归：桌面与 Pixel 7 均检查 H1、描述长度、canonical、Article Schema、5 张图片实际加载、正文长度、控制台和横向溢出；博客索引通过 axe。全项目 44 项单元测试、22 项浏览器测试、类型检查与 14 页生产预渲染全部通过。
+- 已将博客目录、首篇打印指南与 5 个关键词页部署到正式 Cloudflare Worker，版本 ID 为 `a41c177d-594b-4c40-a149-0814eaef6ad5`；`musiciantools.app` 上 7 个博客路由均返回 200，6 篇文章的 canonical 与 Article Schema 正确，正式 sitemap 已包含全部文章 URL。
 
 ## 未完成任务
 
@@ -33,9 +42,11 @@
 - Privacy 与 Terms 仍为项目草案，正式发布前需要站长确认并视情况进行法律审核。
 - String Tension Calculator 仍暂缓，尚未取得可追溯 Unit Weight 数据集及数据使用边界结论。
 - Fret Calculator 暂不包含 multiscale/fanned fret、琴桥补偿或音准补偿。
+- 现有 6 篇博客文章（首篇打印指南 + 5 个关键词页）已部署正式 Worker，但尚无 Search Console 查询、曝光与点击数据。
 
 ## 下一步要做的任务
 
-1. 用户在真实手机、效果器和打印机上验收一小节试听、设备限制建议、1:1 SVG/PDF 校准尺与分页拼接。
-2. 将正式 sitemap 提交到 Google Search Console，并按需要配置 `www` 到根域名的 301 跳转、Cloudflare Web Analytics 与域名邮箱路由。
-3. 上线后观察 Search Console 与匿名产品事件，再决定 String Tension 数据授权工作和 multiscale Fret v2。
+1. 用户审阅线上 6 篇博客文章、关键词目录与配图，并将更新后的 sitemap 提交到 Google Search Console。
+2. 用户在真实手机、效果器和打印机上验收一小节试听、设备限制建议、1:1 SVG/PDF 校准尺与分页拼接。
+3. 按需要配置 `www` 到根域名的 301 跳转、Cloudflare Web Analytics 与域名邮箱路由。
+4. 上线后观察 Search Console 的文章查询、曝光、点击与工具导流，再决定后续 Delay 教程、String Tension 数据授权工作和 multiscale Fret v2。

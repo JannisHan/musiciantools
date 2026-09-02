@@ -71,6 +71,18 @@ function FretCalculatorPage() {
         </p>
         <Link to="/methodology">Read the methodology</Link>
       </section>
+      <aside className="related-guide page-shell" aria-labelledby="print-guide-title">
+        <div>
+          <p className="eyebrow">Workshop guides</p>
+          <h2 id="print-guide-title">Carry accurate geometry to the bench.</h2>
+          <p>Review the formula, prevent cumulative spacing error, or follow the full-scale printing workflow before cutting.</p>
+        </div>
+        <nav className="related-guide-links" aria-label="Fret layout guides">
+          <Link to="/blog/fret-calculator">Fret calculation guide</Link>
+          <Link to="/blog/fret-spacing-calculator">Fret spacing guide</Link>
+          <Link to="/blog/printable-fret-template-guide">Full-scale print guide</Link>
+        </nav>
+      </aside>
     </main>
   )
 }

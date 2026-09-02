@@ -11,6 +11,7 @@ export default function Footer() {
           </p>
         </div>
         <nav className="footer-links" aria-label="Legal and project links">
+          <Link to="/blog">Guides</Link>
           <Link to="/about">About</Link>
           <Link to="/methodology">Methodology</Link>
           <Link to="/privacy">Privacy</Link>

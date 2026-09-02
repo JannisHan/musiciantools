@@ -42,6 +42,17 @@ function BpmDelayPage() {
         <p>Straight, dotted, and triplet relationships use the unrounded value. Display rounding never changes compatibility checks.</p>
         <Link to="/methodology">Read the methodology</Link>
       </section>
+      <aside className="related-guide page-shell" aria-labelledby="timing-guides-title">
+        <div>
+          <p className="eyebrow">Timing guides</p>
+          <h2 id="timing-guides-title">Understand the number, then build the patch.</h2>
+          <p>Use the conversion guide for formulas and studio timing, or the delay guide for pedal limits, rhythmic roles, and left/right channel pairings.</p>
+        </div>
+        <nav className="related-guide-links" aria-label="Timing guides">
+          <Link to="/blog/bpm-to-ms">BPM to MS guide</Link>
+          <Link to="/blog/delay-time-calculator">Delay setup guide</Link>
+        </nav>
+      </aside>
     </main>
   )
 }

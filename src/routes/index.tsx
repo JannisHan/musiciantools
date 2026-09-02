@@ -61,6 +61,15 @@ function HomePage() {
           <Link to="/methodology">Review the methodology</Link>
         </div>
       </section>
+
+      <section className="page-shell home-guide" aria-labelledby="home-guide-title">
+        <div>
+          <p className="eyebrow">From the workshop</p>
+          <h2 id="home-guide-title">Turn the fret layout into an accurate paper template.</h2>
+        </div>
+        <p>Learn the print settings, page alignment method, and two measurements that catch scaling errors before the first cut.</p>
+        <Link to="/blog/printable-fret-template-guide">Read the full-scale print guide <ArrowRight size={18} weight="bold" /></Link>
+      </section>
     </main>
   )
 }

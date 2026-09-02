@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
+  <rect width="1200" height="760" fill="#f6f2ea"/>
+  <rect x="70" y="62" width="1060" height="636" rx="10" fill="#fffcf7" stroke="#cfc7ba" stroke-width="2"/>
+  <text x="112" y="126" fill="#a9430a" font-family="Arial, sans-serif" font-size="18" font-weight="700" letter-spacing="3">SOURCE CHECKLIST</text>
+  <text x="112" y="184" fill="#071c34" font-family="Arial, sans-serif" font-size="42" font-weight="700">Every preset needs a paper trail.</text>
+  <g font-family="Arial, sans-serif">
+    <g fill="none" stroke="#0e693d" stroke-width="5"><circle cx="142" cy="270" r="18"/><path d="m132 270 7 8 15-19"/><circle cx="142" cy="348" r="18"/><path d="m132 348 7 8 15-19"/><circle cx="142" cy="426" r="18"/><path d="m132 426 7 8 15-19"/><circle cx="142" cy="504" r="18"/><path d="m132 504 7 8 15-19"/><circle cx="142" cy="582" r="18"/><path d="m132 582 7 8 15-19"/></g>
+    <g fill="#071c34" font-size="25" font-weight="700"><text x="186" y="280">Exact brand, series, and SKU</text><text x="186" y="358">Material, core, winding, and gauge</text><text x="186" y="436">Unit Weight with declared units</text><text x="186" y="514">Source URL and document version</text><text x="186" y="592">Last verified date and estimate label</text></g>
+    <rect x="790" y="252" width="270" height="340" rx="8" fill="#071c34"/>
+    <text x="826" y="308" fill="#ff9a59" font-size="18" font-weight="700" letter-spacing="2">RESULT STATUS</text>
+    <text x="826" y="372" fill="#f7f1e7" font-size="28" font-weight="700">Traceable</text>
+    <text x="826" y="416" fill="#aebdca" font-size="20">Manufacturer value</text>
+    <line x1="826" y1="454" x2="1024" y2="454" stroke="#34465b" stroke-width="2"/>
+    <text x="826" y="510" fill="#f7f1e7" font-size="28" font-weight="700">Modeled</text>
+    <text x="826" y="554" fill="#aebdca" font-size="20">Clearly labeled estimate</text>
+  </g>
+</svg>

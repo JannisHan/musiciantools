@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
+  <rect width="1200" height="760" fill="#f6f2ea"/>
+  <text x="72" y="94" fill="#a9430a" font-family="Arial, sans-serif" font-size="18" font-weight="700" letter-spacing="3">RELATIVE PROFILE</text>
+  <text x="72" y="150" fill="#071c34" font-family="Arial, sans-serif" font-size="42" font-weight="700">Total tension can hide an uneven set.</text>
+  <g transform="translate(110 220)" font-family="Arial, sans-serif">
+    <line x1="0" y1="390" x2="980" y2="390" stroke="#9f988e" stroke-width="2"/>
+    <line x1="0" y1="0" x2="0" y2="390" stroke="#9f988e" stroke-width="2"/>
+    <g stroke="#e0d9cf" stroke-width="1"><line x1="0" y1="130" x2="980" y2="130"/><line x1="0" y1="260" x2="980" y2="260"/></g>
+    <polyline points="70,215 235,190 400,228 565,128 730,178 895,150" fill="none" stroke="#18304b" stroke-width="7" stroke-linejoin="round"/>
+    <polyline points="70,198 235,205 400,194 565,200 730,192 895,202" fill="none" stroke="#a9430a" stroke-width="7" stroke-linejoin="round"/>
+    <g fill="#18304b"><circle cx="70" cy="215" r="10"/><circle cx="235" cy="190" r="10"/><circle cx="400" cy="228" r="10"/><circle cx="565" cy="128" r="10"/><circle cx="730" cy="178" r="10"/><circle cx="895" cy="150" r="10"/></g>
+    <g fill="#a9430a"><circle cx="70" cy="198" r="10"/><circle cx="235" cy="205" r="10"/><circle cx="400" cy="194" r="10"/><circle cx="565" cy="200" r="10"/><circle cx="730" cy="192" r="10"/><circle cx="895" cy="202" r="10"/></g>
+    <g fill="#596573" font-size="20"><text x="64" y="432">1</text><text x="229" y="432">2</text><text x="394" y="432">3</text><text x="559" y="432">4</text><text x="724" y="432">5</text><text x="889" y="432">6</text></g>
+  </g>
+  <rect x="774" y="94" width="24" height="8" fill="#18304b"/><text x="810" y="105" fill="#596573" font-family="Arial, sans-serif" font-size="18">Uneven profile</text>
+  <rect x="978" y="94" width="24" height="8" fill="#a9430a"/><text x="1014" y="105" fill="#596573" font-family="Arial, sans-serif" font-size="18">Compared target</text>
+</svg>

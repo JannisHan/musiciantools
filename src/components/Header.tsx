@@ -16,6 +16,9 @@ export default function Header() {
           <Link to="/tools/fret-calculator" activeProps={{ className: 'nav-link is-active' }} className="nav-link">
             Fret Layout
           </Link>
+          <Link to="/blog" activeProps={{ className: 'nav-link is-active' }} className="nav-link nav-link-blog">
+            Guides
+          </Link>
           <Link to="/methodology" activeProps={{ className: 'nav-link is-active' }} className="nav-link nav-link-secondary">
             Methodology
           </Link>

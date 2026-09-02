@@ -11,10 +11,17 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as BlogRouteImport } from './routes/blog'
 import { Route as MethodologyRouteImport } from './routes/methodology'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ApiEventsRouteImport } from './routes/api.events'
+import { Route as BlogBpmToMsRouteImport } from './routes/blog_.bpm-to-ms'
+import { Route as BlogDelayTimeCalculatorRouteImport } from './routes/blog_.delay-time-calculator'
+import { Route as BlogFretCalculatorRouteImport } from './routes/blog_.fret-calculator'
+import { Route as BlogFretSpacingCalculatorRouteImport } from './routes/blog_.fret-spacing-calculator'
+import { Route as BlogGuitarStringTensionCalculatorRouteImport } from './routes/blog_.guitar-string-tension-calculator'
+import { Route as BlogPrintableFretTemplateGuideRouteImport } from './routes/blog_.printable-fret-template-guide'
 import { Route as ToolsBpmDelayCalculatorRouteImport } from './routes/tools.bpm-delay-calculator'
 import { Route as ToolsFretCalculatorRouteImport } from './routes/tools.fret-calculator'
 
@@ -26,6 +33,11 @@ const IndexRoute = IndexRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MethodologyRoute = MethodologyRouteImport.update({
@@ -48,6 +60,39 @@ const ApiEventsRoute = ApiEventsRouteImport.update({
   path: '/api/events',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogBpmToMsRoute = BlogBpmToMsRouteImport.update({
+  id: '/blog_/bpm-to-ms',
+  path: '/blog/bpm-to-ms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogDelayTimeCalculatorRoute = BlogDelayTimeCalculatorRouteImport.update({
+  id: '/blog_/delay-time-calculator',
+  path: '/blog/delay-time-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogFretCalculatorRoute = BlogFretCalculatorRouteImport.update({
+  id: '/blog_/fret-calculator',
+  path: '/blog/fret-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogFretSpacingCalculatorRoute =
+  BlogFretSpacingCalculatorRouteImport.update({
+    id: '/blog_/fret-spacing-calculator',
+    path: '/blog/fret-spacing-calculator',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const BlogGuitarStringTensionCalculatorRoute =
+  BlogGuitarStringTensionCalculatorRouteImport.update({
+    id: '/blog_/guitar-string-tension-calculator',
+    path: '/blog/guitar-string-tension-calculator',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const BlogPrintableFretTemplateGuideRoute =
+  BlogPrintableFretTemplateGuideRouteImport.update({
+    id: '/blog_/printable-fret-template-guide',
+    path: '/blog/printable-fret-template-guide',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ToolsBpmDelayCalculatorRoute = ToolsBpmDelayCalculatorRouteImport.update({
   id: '/tools/bpm-delay-calculator',
   path: '/tools/bpm-delay-calculator',
@@ -62,20 +107,34 @@ const ToolsFretCalculatorRoute = ToolsFretCalculatorRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/blog': typeof BlogRoute
   '/methodology': typeof MethodologyRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/api/events': typeof ApiEventsRoute
+  '/blog/bpm-to-ms': typeof BlogBpmToMsRoute
+  '/blog/delay-time-calculator': typeof BlogDelayTimeCalculatorRoute
+  '/blog/fret-calculator': typeof BlogFretCalculatorRoute
+  '/blog/fret-spacing-calculator': typeof BlogFretSpacingCalculatorRoute
+  '/blog/guitar-string-tension-calculator': typeof BlogGuitarStringTensionCalculatorRoute
+  '/blog/printable-fret-template-guide': typeof BlogPrintableFretTemplateGuideRoute
   '/tools/bpm-delay-calculator': typeof ToolsBpmDelayCalculatorRoute
   '/tools/fret-calculator': typeof ToolsFretCalculatorRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/blog': typeof BlogRoute
   '/methodology': typeof MethodologyRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/api/events': typeof ApiEventsRoute
+  '/blog/bpm-to-ms': typeof BlogBpmToMsRoute
+  '/blog/delay-time-calculator': typeof BlogDelayTimeCalculatorRoute
+  '/blog/fret-calculator': typeof BlogFretCalculatorRoute
+  '/blog/fret-spacing-calculator': typeof BlogFretSpacingCalculatorRoute
+  '/blog/guitar-string-tension-calculator': typeof BlogGuitarStringTensionCalculatorRoute
+  '/blog/printable-fret-template-guide': typeof BlogPrintableFretTemplateGuideRoute
   '/tools/bpm-delay-calculator': typeof ToolsBpmDelayCalculatorRoute
   '/tools/fret-calculator': typeof ToolsFretCalculatorRoute
 }
@@ -83,10 +142,17 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/blog': typeof BlogRoute
   '/methodology': typeof MethodologyRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/api/events': typeof ApiEventsRoute
+  '/blog_/bpm-to-ms': typeof BlogBpmToMsRoute
+  '/blog_/delay-time-calculator': typeof BlogDelayTimeCalculatorRoute
+  '/blog_/fret-calculator': typeof BlogFretCalculatorRoute
+  '/blog_/fret-spacing-calculator': typeof BlogFretSpacingCalculatorRoute
+  '/blog_/guitar-string-tension-calculator': typeof BlogGuitarStringTensionCalculatorRoute
+  '/blog_/printable-fret-template-guide': typeof BlogPrintableFretTemplateGuideRoute
   '/tools/bpm-delay-calculator': typeof ToolsBpmDelayCalculatorRoute
   '/tools/fret-calculator': typeof ToolsFretCalculatorRoute
 }
@@ -95,30 +161,51 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/blog'
     | '/methodology'
     | '/privacy'
     | '/terms'
     | '/api/events'
+    | '/blog/bpm-to-ms'
+    | '/blog/delay-time-calculator'
+    | '/blog/fret-calculator'
+    | '/blog/fret-spacing-calculator'
+    | '/blog/guitar-string-tension-calculator'
+    | '/blog/printable-fret-template-guide'
     | '/tools/bpm-delay-calculator'
     | '/tools/fret-calculator'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/blog'
     | '/methodology'
     | '/privacy'
     | '/terms'
     | '/api/events'
+    | '/blog/bpm-to-ms'
+    | '/blog/delay-time-calculator'
+    | '/blog/fret-calculator'
+    | '/blog/fret-spacing-calculator'
+    | '/blog/guitar-string-tension-calculator'
+    | '/blog/printable-fret-template-guide'
     | '/tools/bpm-delay-calculator'
     | '/tools/fret-calculator'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/blog'
     | '/methodology'
     | '/privacy'
     | '/terms'
     | '/api/events'
+    | '/blog_/bpm-to-ms'
+    | '/blog_/delay-time-calculator'
+    | '/blog_/fret-calculator'
+    | '/blog_/fret-spacing-calculator'
+    | '/blog_/guitar-string-tension-calculator'
+    | '/blog_/printable-fret-template-guide'
     | '/tools/bpm-delay-calculator'
     | '/tools/fret-calculator'
   fileRoutesById: FileRoutesById
@@ -126,10 +213,17 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  BlogRoute: typeof BlogRoute
   MethodologyRoute: typeof MethodologyRoute
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
   ApiEventsRoute: typeof ApiEventsRoute
+  BlogBpmToMsRoute: typeof BlogBpmToMsRoute
+  BlogDelayTimeCalculatorRoute: typeof BlogDelayTimeCalculatorRoute
+  BlogFretCalculatorRoute: typeof BlogFretCalculatorRoute
+  BlogFretSpacingCalculatorRoute: typeof BlogFretSpacingCalculatorRoute
+  BlogGuitarStringTensionCalculatorRoute: typeof BlogGuitarStringTensionCalculatorRoute
+  BlogPrintableFretTemplateGuideRoute: typeof BlogPrintableFretTemplateGuideRoute
   ToolsBpmDelayCalculatorRoute: typeof ToolsBpmDelayCalculatorRoute
   ToolsFretCalculatorRoute: typeof ToolsFretCalculatorRoute
 }
@@ -148,6 +242,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/methodology': {
@@ -178,6 +279,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiEventsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog_/bpm-to-ms': {
+      id: '/blog_/bpm-to-ms'
+      path: '/blog/bpm-to-ms'
+      fullPath: '/blog/bpm-to-ms'
+      preLoaderRoute: typeof BlogBpmToMsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog_/delay-time-calculator': {
+      id: '/blog_/delay-time-calculator'
+      path: '/blog/delay-time-calculator'
+      fullPath: '/blog/delay-time-calculator'
+      preLoaderRoute: typeof BlogDelayTimeCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog_/fret-calculator': {
+      id: '/blog_/fret-calculator'
+      path: '/blog/fret-calculator'
+      fullPath: '/blog/fret-calculator'
+      preLoaderRoute: typeof BlogFretCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog_/fret-spacing-calculator': {
+      id: '/blog_/fret-spacing-calculator'
+      path: '/blog/fret-spacing-calculator'
+      fullPath: '/blog/fret-spacing-calculator'
+      preLoaderRoute: typeof BlogFretSpacingCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog_/guitar-string-tension-calculator': {
+      id: '/blog_/guitar-string-tension-calculator'
+      path: '/blog/guitar-string-tension-calculator'
+      fullPath: '/blog/guitar-string-tension-calculator'
+      preLoaderRoute: typeof BlogGuitarStringTensionCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog_/printable-fret-template-guide': {
+      id: '/blog_/printable-fret-template-guide'
+      path: '/blog/printable-fret-template-guide'
+      fullPath: '/blog/printable-fret-template-guide'
+      preLoaderRoute: typeof BlogPrintableFretTemplateGuideRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tools/bpm-delay-calculator': {
       id: '/tools/bpm-delay-calculator'
       path: '/tools/bpm-delay-calculator'
@@ -198,10 +341,18 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  BlogRoute: BlogRoute,
   MethodologyRoute: MethodologyRoute,
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
   ApiEventsRoute: ApiEventsRoute,
+  BlogBpmToMsRoute: BlogBpmToMsRoute,
+  BlogDelayTimeCalculatorRoute: BlogDelayTimeCalculatorRoute,
+  BlogFretCalculatorRoute: BlogFretCalculatorRoute,
+  BlogFretSpacingCalculatorRoute: BlogFretSpacingCalculatorRoute,
+  BlogGuitarStringTensionCalculatorRoute:
+    BlogGuitarStringTensionCalculatorRoute,
+  BlogPrintableFretTemplateGuideRoute: BlogPrintableFretTemplateGuideRoute,
   ToolsBpmDelayCalculatorRoute: ToolsBpmDelayCalculatorRoute,
   ToolsFretCalculatorRoute: ToolsFretCalculatorRoute,
 }

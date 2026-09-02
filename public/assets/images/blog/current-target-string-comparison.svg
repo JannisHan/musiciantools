@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
+  <rect width="1200" height="760" fill="#f6f2ea"/>
+  <text x="72" y="94" fill="#a9430a" font-family="Arial, sans-serif" font-size="18" font-weight="700" letter-spacing="3">CURRENT VS TARGET</text>
+  <text x="72" y="150" fill="#071c34" font-family="Arial, sans-serif" font-size="42" font-weight="700">Compare the profile, not one isolated number.</text>
+  <g font-family="Arial, sans-serif">
+    <text x="80" y="232" fill="#596573" font-size="20">STRING</text>
+    <text x="206" y="232" fill="#596573" font-size="20">CURRENT</text>
+    <text x="684" y="232" fill="#596573" font-size="20">TARGET</text>
+    <g fill="#071c34" font-size="22" font-weight="700">
+      <text x="84" y="298">1</text><text x="84" y="370">2</text><text x="84" y="442">3</text>
+      <text x="84" y="514">4</text><text x="84" y="586">5</text><text x="84" y="658">6</text>
+    </g>
+    <g fill="#18304b">
+      <rect x="206" y="270" width="340" height="24" rx="4"/><rect x="206" y="342" width="360" height="24" rx="4"/>
+      <rect x="206" y="414" width="330" height="24" rx="4"/><rect x="206" y="486" width="380" height="24" rx="4"/>
+      <rect x="206" y="558" width="354" height="24" rx="4"/><rect x="206" y="630" width="368" height="24" rx="4"/>
+    </g>
+    <g fill="#a9430a">
+      <rect x="684" y="270" width="326" height="24" rx="4"/><rect x="684" y="342" width="352" height="24" rx="4"/>
+      <rect x="684" y="414" width="340" height="24" rx="4"/><rect x="684" y="486" width="370" height="24" rx="4"/>
+      <rect x="684" y="558" width="346" height="24" rx="4"/><rect x="684" y="630" width="360" height="24" rx="4"/>
+    </g>
+    <line x1="620" y1="246" x2="620" y2="682" stroke="#cfc7ba" stroke-width="2"/>
+  </g>
+</svg>

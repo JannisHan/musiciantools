@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
+  <rect width="1200" height="760" fill="#f6f2ea"/>
+  <text x="70" y="98" fill="#a9430a" font-family="Arial, sans-serif" font-size="18" font-weight="700" letter-spacing="3">INPUT MODEL</text>
+  <text x="70" y="154" fill="#071c34" font-family="Arial, sans-serif" font-size="42" font-weight="700">Four inputs. One traceable result.</text>
+  <g font-family="Arial, sans-serif">
+    <rect x="70" y="220" width="240" height="330" rx="8" fill="#fffcf7" stroke="#cfc7ba" stroke-width="2"/>
+    <text x="98" y="268" fill="#071c34" font-size="26" font-weight="700">String</text>
+    <text x="98" y="318" fill="#596573" font-size="20">Brand + series</text>
+    <text x="98" y="356" fill="#596573" font-size="20">Plain / wound</text>
+    <text x="98" y="394" fill="#596573" font-size="20">Core + material</text>
+    <text x="98" y="432" fill="#596573" font-size="20">Gauge</text>
+    <rect x="340" y="220" width="240" height="330" rx="8" fill="#fffcf7" stroke="#cfc7ba" stroke-width="2"/>
+    <text x="368" y="268" fill="#071c34" font-size="26" font-weight="700">Unit Weight</text>
+    <text x="368" y="318" fill="#596573" font-size="20">lb / inch</text>
+    <text x="368" y="356" fill="#596573" font-size="20">Source URL</text>
+    <text x="368" y="394" fill="#596573" font-size="20">Version</text>
+    <text x="368" y="432" fill="#596573" font-size="20">Checked date</text>
+    <rect x="610" y="220" width="240" height="330" rx="8" fill="#fffcf7" stroke="#cfc7ba" stroke-width="2"/>
+    <text x="638" y="268" fill="#071c34" font-size="26" font-weight="700">Instrument</text>
+    <text x="638" y="318" fill="#596573" font-size="20">Scale length</text>
+    <text x="638" y="356" fill="#596573" font-size="20">Single / multi scale</text>
+    <text x="638" y="394" fill="#596573" font-size="20">Current setup</text>
+    <rect x="880" y="220" width="250" height="330" rx="8" fill="#071c34"/>
+    <text x="908" y="268" fill="#ff9a59" font-size="26" font-weight="700">Target</text>
+    <text x="908" y="318" fill="#f7f1e7" font-size="20">Pitch + octave</text>
+    <text x="908" y="356" fill="#f7f1e7" font-size="20">Per-string change</text>
+    <text x="908" y="394" fill="#f7f1e7" font-size="20">Total change</text>
+    <text x="908" y="432" fill="#f7f1e7" font-size="20">Profile spread</text>
+    <path d="M310 385h30M580 385h30M850 385h30" stroke="#a9430a" stroke-width="5"/>
+    <text x="70" y="636" fill="#596573" font-size="22">Gauge is a label. Unit Weight identifies the mass used by the formula.</text>
+  </g>
+</svg>
